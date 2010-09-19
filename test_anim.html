@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Test page for Animatic JavaScript library</title>
+    <meta name = "viewport" content = "width = device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="javascripts/animatic.js"></script>
+
+    <script>
+      function clicked(event) {
+        var test = document.getElementById("test");
+        
+        // Move the DIV to the (X, Y) position that was clicked.
+        animate(test.style, "left", event.clientX);
+        animate(test.style, "top", event.clientY);
+
+        // And make the font a random size.
+        animate(test.style, "fontSize", Math.floor(Math.random()*31) + 4);
+
+        // And some random transparency
+        animate(test.style, "opacity", Math.random());
+      }
+      
+      document.onmousedown = clicked;
+    </script>
+
+  </head>
+  <body>
+
+    <div id="test" style="position: absolute; top: 10px; left: 100px; font-size: 15pt;">
+      Click on the page and I'll follow you
+    </div>
+
+  </body>
+</html>
