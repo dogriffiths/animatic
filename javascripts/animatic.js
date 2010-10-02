@@ -31,6 +31,10 @@ function animate(obj, attrName, targetValue, howManySecs, animatorToUse) {
   animateWithAnimator(obj, attrName, animatorFn);
 }
 
+//function drift(obj) {
+//  animate(obj, "left", 1000);
+//}
+
 function animateWithAnimator(obj, attrName, animatorFn) {
   obj["animatic_" + attrName] = animatorFn;
    for (var i = animatic_Objects.length - 1; i >= 0; i--) {
