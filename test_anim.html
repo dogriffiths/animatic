@@ -14,6 +14,8 @@
         animate(test.style, "left", event.clientX);
         animate(test.style, "top", event.clientY);
 
+        animate(test.style, "-webkit-transform", Math.floor(Math.random() * 360));
+
         // And make the font a random size.
         animate(test.style, "fontSize", Math.floor(Math.random()*31) + 4);
 
@@ -38,7 +40,7 @@
   </head>
   <body onload="init()">
 
-    <div id="test" style="position: absolute; top: 10px; left: 100px; font-size: 15pt;">
+    <div id="test" style="position: absolute; top: 10px; left: 100px; font-size: 15pt; -webkit-transform: rotate(0deg);">
       Click on the page and I'll follow you
     </div>
 
