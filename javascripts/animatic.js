@@ -84,6 +84,9 @@ function unitsFor(s) {
 }
  
 function addUnitsTo(s, u) {
+    if (u == "?") {
+      return eval(s);
+    }
     return u.replace(/\?/ig, "" + s);
 }
  
