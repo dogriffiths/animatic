@@ -117,7 +117,6 @@ function drifterX(speedValue, startXValue, headingValue, maxXValue) {
           cx = cx % maxX;
         //   now = now + ((maxXValue - startX) / speed);
         }
-document.title = "diff = " + (diff * speed * Math.sin(heading * Math.PI / 180.0) / 100) + " and cx = " + cx;
 	return cx
   }
   return counterClosure;
