@@ -106,6 +106,7 @@ function drifterY(speedValue, startYValue, headingValue, maxYValue) {
         var cy = startY - diff * speed * Math.cos(heading * Math.PI / 180.0) / 100;
         if (cy > maxY) {
           cy = cy % maxY;
+          now = now + ((maxYValue - startY) / speed);
         }
 	return cy
   }
