@@ -76,11 +76,11 @@ function updateAll() {
 }
 
 function stripUnits(s) {
-    return s.replace(/[a-z%]/ig, "");
+    return ("" + s).replace(/[a-z%]/ig, "");
 }
  
 function unitsFor(s) {
-    return s.replace(/[0-9.]+/ig, "?");
+    return ("" + s).replace(/[0-9.]+/ig, "?");
 }
  
 function addUnitsTo(s, u) {
