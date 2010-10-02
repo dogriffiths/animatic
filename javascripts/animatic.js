@@ -41,6 +41,12 @@ function drift(obj, heading, speedValue, maxXValue, maxYValue) {
   }
   animatorFn = drifterY(speed, obj[attrNameY], heading, maxY);
   animateWithAnimator(obj, attrNameY, animatorFn);
+  var attrNameX = "x";
+  if (obj.left) {
+    attrNameX = "left";
+  }
+  animatorFn = drifterX(speed, obj[attrNameX], heading, maxX);
+  animateWithAnimator(obj, attrNameX, animatorFn);
 }
 
 function animateWithAnimator(obj, attrName, animatorFn) {
@@ -94,6 +100,29 @@ function runner(p, fromValue, toValue) {
   return counterClosure;
 }
 
+function drifterX(speedValue, startXValue, headingValue, maxXValue) {
+  var speed = speedValue;
+  var startX = eval(stripUnits(startXValue + ""));
+  var heading = eval(stripUnits(headingValue + ""));
+  var maxX = eval(stripUnits(maxXValue + ""));
+  var now = (new Date()).valueOf();
+  function counterClosure() {
+	var justNow = (new Date()).valueOf();
+        var diff = (justNow - now);
+        var cx = startX + diff * speed * Math.sin(heading * Math.PI / 180.0) / 1000;
+        while (cx < 0) {
+          cx = cx + maxX;
+        }
+        if (cx > maxX) {
+          cx = cx % maxX;
+        //   now = now + ((maxXValue - startX) / speed);
+        }
+document.title = "diff = " + (diff * speed * Math.sin(heading * Math.PI / 180.0) / 100) + " and cx = " + cx;
+	return cx
+  }
+  return counterClosure;
+}
+
 function drifterY(speedValue, startYValue, headingValue, maxYValue) {
   var speed = speedValue;
   var startY = eval(stripUnits(startYValue + ""));
@@ -103,7 +132,10 @@ function drifterY(speedValue, startYValue, headingValue, maxYValue) {
   function counterClosure() {
 	var justNow = (new Date()).valueOf();
         var diff = (justNow - now);
-        var cy = startY - diff * speed * Math.cos(heading * Math.PI / 180.0) / 100;
+        var cy = startY - diff * speed * Math.cos(heading * Math.PI / 180.0) / 1000;
+        while (cy < 0) {
+          cy = cy + maxY;
+        }
         if (cy > maxY) {
           cy = cy % maxY;
           now = now + ((maxYValue - startY) / speed);
