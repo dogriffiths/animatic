@@ -31,20 +31,28 @@ function animate(obj, attrName, targetValue, howManySecs, animatorToUse) {
   animateWithAnimator(obj, attrName, animatorFn);
 }
 
-//function drift(obj) {
-//  animate(obj, "left", 1000);
-//}
+function drift(obj, heading, speedValue, maxXValue, maxYValue) {
+  var speed = speedValue || 100;
+  var maxX = maxXValue || window.innerWidth;
+  var maxY = maxYValue || window.innerHeight;
+  var attrNameY = "y";
+  if (obj.top) {
+    attrNameY = "top";
+  }
+  animatorFn = drifterY(speed, obj[attrNameY], heading, maxY);
+  animateWithAnimator(obj, attrNameY, animatorFn);
+}
 
 function animateWithAnimator(obj, attrName, animatorFn) {
   obj["animatic_" + attrName] = animatorFn;
-   for (var i = animatic_Objects.length - 1; i >= 0; i--) {
+  for (var i = animatic_Objects.length - 1; i >= 0; i--) {
     var o = animatic_Objects[i];
     var a = animatic_Attributes[i];
     if ((o == obj) && (a == attrName)) {
       animatic_Objects.splice(i, 1);
       animatic_Attributes.splice(i, 1);
     }
-   }
+  }
   animatic_Objects.push(obj);
   animatic_Attributes.push(attrName);
 }
@@ -82,6 +90,24 @@ function runner(p, fromValue, toValue) {
 	var prop = (justNow - now) / (then - now);
 	var currently = v1 + ((1-Math.sqrt(1-prop)) * (v2 - v1));
 	return currently
+  }
+  return counterClosure;
+}
+
+function drifterY(speedValue, startYValue, headingValue, maxYValue) {
+  var speed = speedValue;
+  var startY = eval(stripUnits(startYValue + ""));
+  var heading = eval(stripUnits(headingValue + ""));
+  var maxY = eval(stripUnits(maxYValue + ""));
+  var now = (new Date()).valueOf();
+  function counterClosure() {
+	var justNow = (new Date()).valueOf();
+        var diff = (justNow - now);
+        var cy = startY - diff * speed * Math.cos(heading * Math.PI / 180.0) / 100;
+        if (cy > maxY) {
+          cy = cy % maxY;
+        }
+	return cy
   }
   return counterClosure;
 }
