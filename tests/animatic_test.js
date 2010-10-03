@@ -10,19 +10,9 @@ function mock_animatic_now()
     return _mock_time + _mock_time_offset;
 }
 
-function waitAMo(milliseconds)
-{
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-
 module("animatic module");
 
-test("Test test", function() {
+test("Test simple animation", function() {
     var testObject = new Object();
     testObject.a = 1;
     var myTime = mock_animatic_now();
@@ -36,6 +26,17 @@ test("Test test", function() {
     // Check that the SQRT function animates the .a attribute to 1.29 (between 1 & 2)
     equalsWithin2DP(testObject.animatic_a(), 1.29, "Generated dynamic attribute function");
     equalsWithin2DP(testObject.a, 1.29, "Check attribute");
+});
+
+test("Test completed animation", function() {
+    var testObject = new Object();
+    testObject.a = 1;
+    var myTime = mock_animatic_now();
+    _animatic_now = mock_animatic_now;
+    animate(testObject, "a", 2);
+    _mock_time_offset = 2100; // 2.1 seconds
+    _animatic_updateAll();
+    equalsWithin2DP(testObject.a, 2, "Animation should have completed");
 });
 
 
