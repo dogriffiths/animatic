@@ -30,7 +30,7 @@ var _animatic_Attributes = [];
 
 function animate(obj, attrName, targetValue, howManySecs, animatorToUse)
 {
-    var animator = animatorToUse || runner;
+    var animator = animatorToUse || _animatic_runner;
     var t = howManySecs || 0.25;
     animatorFn = animator(t, obj[attrName], targetValue);
     _animatic_animateWithAnimator(obj, attrName, animatorFn);
@@ -102,9 +102,9 @@ function _animatic_updateAll()
     for (i in _animatic_Objects) {
         var obj = _animatic_Objects[i];
         var attrName = _animatic_Attributes[i];
-        var units = unitsFor(obj[attrName]);
+        var units = _animatic_unitsFor(obj[attrName]);
         var newValue = obj["animatic_" + attrName]()
-                       obj[attrName] = addUnitsTo("" + newValue, units);
+                       obj[attrName] = _animatic_addUnitsTo("" + newValue, units);
     }
 }
 
@@ -113,12 +113,12 @@ function _animatic_stripUnits(s)
     return ("" + s).replace( /[a-z%]/ig, "");
 }
 
-function unitsFor(s)
+function _animatic_unitsFor(s)
 {
     return ("" + s).replace( /[0-9.-]+/ig, "?");
 }
 
-function addUnitsTo(s, u)
+function _animatic_addUnitsTo(s, u)
 {
     if (u == "?") {
         return eval(s);
@@ -126,7 +126,11 @@ function addUnitsTo(s, u)
     return u.replace( /\?/ig, "" + s);
 }
 
-function runner(p, fromValue, toValue)
+//
+// The animator factories
+//
+
+function _animatic_runner(p, fromValue, toValue)
 {
     var v1 = eval(_animatic_stripUnits(fromValue + ""));
     var v2 = eval(_animatic_stripUnits(toValue + ""));
@@ -168,10 +172,6 @@ function _animatic_drifterX(speedValue, startXValue, headingValue, wrap, maxXVal
     }
     return counterClosure;
 }
-
-//
-// The animator factories
-//
 
 function _animatic_drifterY(speedValue, startYValue, headingValue, wrap, maxYValue)
 {
