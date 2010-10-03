@@ -37,7 +37,7 @@ var _animatic_Attributes = [];
  * to 300px in 4 seconds, use:
  *
  *   animate(heading.style, "left", 300, 4);
- * 
+ *
  */
 function animate(obj, attrName, targetValue, howManySecs)
 {
@@ -154,6 +154,9 @@ function _animatic_addUnitsTo(s, u)
 {
     if (u == "?") {
         return eval(s);
+    }
+    if (u.match(/\?.+\?/)) {
+        throw "Animatic cannot animate an attribute with multiple parameters";
     }
     return u.replace( /\?/ig, "" + s);
 }
