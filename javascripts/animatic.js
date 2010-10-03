@@ -158,6 +158,11 @@ function _animatic_addUnitsTo(s, u)
     return u.replace( /\?/ig, "" + s);
 }
 
+function _animatic_now()
+{
+    return (new Date()).valueOf();
+}
+
 //
 // The animator factories
 //
@@ -166,10 +171,10 @@ function _animatic_runner(p, fromValue, toValue)
 {
     var v1 = eval(_animatic_stripUnits(fromValue + ""));
     var v2 = eval(_animatic_stripUnits(toValue + ""));
-    var now = (new Date()).valueOf();
+    var now = _animatic_now();
     var then = now + (p * 1000);
     function counterClosure() {
-        var justNow = (new Date()).valueOf();
+        var justNow = _animatic_now();
         if (justNow >= then) {
             return v2;
         }
@@ -186,9 +191,9 @@ function _animatic_drifterX(speedValue, startXValue, headingValue, wrap, maxXVal
     var startX = eval(_animatic_stripUnits(startXValue + ""));
     var heading = eval(_animatic_stripUnits(headingValue + ""));
     var maxX = eval(_animatic_stripUnits(maxXValue + ""));
-    var now = (new Date()).valueOf();
+    var now = _animatic_now();
     function counterClosure() {
-        var justNow = (new Date()).valueOf();
+        var justNow = _animatic_now();
         var diff = (justNow - now);
         var cx = startX + diff * speed * Math.sin(heading * Math.PI / 180.0) / 1000;
         if (wrap) {
@@ -211,9 +216,9 @@ function _animatic_drifterY(speedValue, startYValue, headingValue, wrap, maxYVal
     var startY = eval(_animatic_stripUnits(startYValue + ""));
     var heading = eval(_animatic_stripUnits(headingValue + ""));
     var maxY = eval(_animatic_stripUnits(maxYValue + ""));
-    var now = (new Date()).valueOf();
+    var now = _animatic_now();
     function counterClosure() {
-        var justNow = (new Date()).valueOf();
+        var justNow = _animatic_now();
         var diff = (justNow - now);
         var cy = startY - diff * speed * Math.cos(heading * Math.PI / 180.0) / 1000;
         if (wrap) {
@@ -232,10 +237,10 @@ function _animatic_drifterY(speedValue, startYValue, headingValue, wrap, maxYVal
 
 function _animatic_rotator(p)
 {
-    var now = (new Date()).valueOf();
+    var now = _animatic_now();
     var then = now + (p * 1000);
     function counterClosure() {
-        var justNow = (new Date()).valueOf();
+        var justNow = _animatic_now();
         if (justNow >= then) {
             now = justNow;
             then = now + (p * 1000);
