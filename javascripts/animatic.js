@@ -39,14 +39,28 @@ var _animatic_Attributes = [];
  *   animate(heading.style, "left", 300, 4);
  * 
  */
-function animate(obj, attrName, targetValue, howManySecs, animatorToUse)
+function animate(obj, attrName, targetValue, howManySecs)
 {
-    var animator = animatorToUse || _animatic_runner;
     var t = howManySecs || 0.25;
-    animatorFn = animator(t, obj[attrName], targetValue);
+    animatorFn = _animatic_runner(t, obj[attrName], targetValue);
     _animatic_animateWithAnimator(obj, attrName, animatorFn);
 }
 
+/**
+ * Make an object drift across the screen at a constant rate. This
+ * function will look to see if the object has "top" and "left"
+ * attributes. Otherwise it will create "x" and "y" attributes on the
+ * object and then animate them.
+ *
+ *   drift(<object>, <heading-angle>, <points-per-second>,
+ *         [<wrap?> = true],
+ *         [<max-y> = screen width], [<max-x> = screen height])
+ *
+ * For example, to make an object called "contents" drift across
+ * the screen diagonally down-and-right at 100 pixels per second, use:
+ *
+ *   drift(contents.style, 135, 100);
+ */
 function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue)
 {
     var speed = speedValue || 100;
@@ -70,6 +84,13 @@ function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue)
     _animatic_animateWithAnimator(obj, attrNameX, animatorFn);
 }
 
+/**
+ * Stop the animation for a given object/attribute. If the attribute-name
+ * is not given, this method will stop the animation of all attributes on
+ * the object.
+ *
+ *   stopAnimation(<object>, [<attribute-name>])
+ */
 function stopAnimation(obj, attrNameValue)
 {
     var attrName = attrNameValue || "";
