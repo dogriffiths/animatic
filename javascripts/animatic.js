@@ -87,7 +87,8 @@ function updateAll() {
     var obj = animatic_Objects[i];
     var attrName = animatic_Attributes[i];
     var units = unitsFor(obj[attrName]);
-    obj[attrName] = addUnitsTo("" + obj["animatic_" + attrName](), units);
+    var newValue = obj["animatic_" + attrName]()
+    obj[attrName] = addUnitsTo("" + newValue, units);
   }
 }
 
@@ -96,7 +97,7 @@ function stripUnits(s) {
 }
  
 function unitsFor(s) {
-    return ("" + s).replace(/[0-9.]+/ig, "?");
+    return ("" + s).replace(/[0-9.-]+/ig, "?");
 }
  
 function addUnitsTo(s, u) {
@@ -139,7 +140,7 @@ function drifterX(speedValue, startXValue, headingValue, wrap, maxXValue) {
             }
             if (cx > maxX) {
 		cx = cx % maxX;
-		//   now = now + ((maxXValue - startX) / speed);
+//		now = now + ((maxXValue - startX) / speed);
             }
         }
 	return cx
