@@ -28,6 +28,17 @@ var _animatic_Attributes = [];
 // These are the major functions.
 //
 
+/**
+ * Animate an attribute of an object to some value.
+ *
+ *   animate(<object>, <attribute-name>, <to-value>, <how-many-secs>=0.5)
+ *
+ * For example, to animate the left-position of an object called heading
+ * to 300px in 4 seconds, use:
+ *
+ *   animate(heading.style, "left", 300, 4);
+ * 
+ */
 function animate(obj, attrName, targetValue, howManySecs, animatorToUse)
 {
     var animator = animatorToUse || _animatic_runner;
