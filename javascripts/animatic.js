@@ -31,21 +31,37 @@ function animate(obj, attrName, targetValue, howManySecs, animatorToUse) {
   animateWithAnimator(obj, attrName, animatorFn);
 }
 
-function drift(obj, heading, speedValue, maxXValue, maxYValue) {
+function stopAnimation(obj, attrNameValue) {
+  var attrName = attrNameValue || "";
+  for (var i = animatic_Objects.length - 1; i >= 0; i--) {
+    var o = animatic_Objects[i];
+    var a = animatic_Attributes[i];
+    if ((o == obj) && ((a == attrName) || (attrName = ""))) {
+      animatic_Objects.splice(i, 1);
+      animatic_Attributes.splice(i, 1);
+    }
+  }
+}
+
+function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue) {
   var speed = speedValue || 100;
   var maxX = maxXValue || window.innerWidth;
   var maxY = maxYValue || window.innerHeight;
+  var wrap = wrapValue;
+  if (wrap == null) {
+    wrap = true;
+  }
   var attrNameY = "y";
   if (obj.top) {
     attrNameY = "top";
   }
-  animatorFn = drifterY(speed, obj[attrNameY], heading, maxY);
+  animatorFn = drifterY(speed, obj[attrNameY], heading, wrap, maxY);
   animateWithAnimator(obj, attrNameY, animatorFn);
   var attrNameX = "x";
   if (obj.left) {
     attrNameX = "left";
   }
-  animatorFn = drifterX(speed, obj[attrNameX], heading, maxX);
+  animatorFn = drifterX(speed, obj[attrNameX], heading, wrap, maxX);
   animateWithAnimator(obj, attrNameX, animatorFn);
 }
 
@@ -107,7 +123,7 @@ function runner(p, fromValue, toValue) {
   return counterClosure;
 }
 
-function drifterX(speedValue, startXValue, headingValue, maxXValue) {
+function drifterX(speedValue, startXValue, headingValue, wrap, maxXValue) {
   var speed = speedValue;
   var startX = eval(stripUnits(startXValue + ""));
   var heading = eval(stripUnits(headingValue + ""));
@@ -117,20 +133,21 @@ function drifterX(speedValue, startXValue, headingValue, maxXValue) {
 	var justNow = (new Date()).valueOf();
         var diff = (justNow - now);
         var cx = startX + diff * speed * Math.sin(heading * Math.PI / 180.0) / 1000;
-        while (cx < 0) {
-          cx = cx + maxX;
+        if (wrap) {
+            while (cx < 0) {
+		cx = cx + maxX;
+            }
+            if (cx > maxX) {
+		cx = cx % maxX;
+		//   now = now + ((maxXValue - startX) / speed);
+            }
         }
-        if (cx > maxX) {
-          cx = cx % maxX;
-        //   now = now + ((maxXValue - startX) / speed);
-        }
-
 	return cx
   }
   return counterClosure;
 }
 
-function drifterY(speedValue, startYValue, headingValue, maxYValue) {
+function drifterY(speedValue, startYValue, headingValue, wrap, maxYValue) {
   var speed = speedValue;
   var startY = eval(stripUnits(startYValue + ""));
   var heading = eval(stripUnits(headingValue + ""));
@@ -140,12 +157,14 @@ function drifterY(speedValue, startYValue, headingValue, maxYValue) {
 	var justNow = (new Date()).valueOf();
         var diff = (justNow - now);
         var cy = startY - diff * speed * Math.cos(heading * Math.PI / 180.0) / 1000;
-        while (cy < 0) {
-          cy = cy + maxY;
-        }
-        if (cy > maxY) {
-          cy = cy % maxY;
-          now = now + ((maxYValue - startY) / speed);
+        if (wrap) {
+            while (cy < 0) {
+		cy = cy + maxY;
+            }
+            if (cy > maxY) {
+		cy = cy % maxY;
+		now = now + ((maxYValue - startY) / speed);
+            }
         }
 	return cy
   }
