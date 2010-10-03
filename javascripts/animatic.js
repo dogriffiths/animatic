@@ -21,26 +21,18 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-var animatic_Objects = [];
-var animatic_Attributes = [];
+var _animatic_Objects = [];
+var _animatic_Attributes = [];
+
+//
+// These are the major functions.
+//
 
 function animate(obj, attrName, targetValue, howManySecs, animatorToUse) {
   var animator = animatorToUse || runner;
   var t = howManySecs || 0.25;
   animatorFn = animator(t, obj[attrName], targetValue);
-  animateWithAnimator(obj, attrName, animatorFn);
-}
-
-function stopAnimation(obj, attrNameValue) {
-  var attrName = attrNameValue || "";
-  for (var i = animatic_Objects.length - 1; i >= 0; i--) {
-    var o = animatic_Objects[i];
-    var a = animatic_Attributes[i];
-    if ((o == obj) && ((a == attrName) || (attrName = ""))) {
-      animatic_Objects.splice(i, 1);
-      animatic_Attributes.splice(i, 1);
-    }
-  }
+  _animatic_animateWithAnimator(obj, attrName, animatorFn);
 }
 
 function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue) {
@@ -55,44 +47,60 @@ function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue) {
   if (obj.top) {
     attrNameY = "top";
   }
-  animatorFn = drifterY(speed, obj[attrNameY], heading, wrap, maxY);
-  animateWithAnimator(obj, attrNameY, animatorFn);
+  animatorFn = _animatic_drifterY(speed, obj[attrNameY], heading, wrap, maxY);
+  _animatic_animateWithAnimator(obj, attrNameY, animatorFn);
   var attrNameX = "x";
   if (obj.left) {
     attrNameX = "left";
   }
-  animatorFn = drifterX(speed, obj[attrNameX], heading, wrap, maxX);
-  animateWithAnimator(obj, attrNameX, animatorFn);
+  animatorFn = _animatic_drifterX(speed, obj[attrNameX], heading, wrap, maxX);
+  _animatic_animateWithAnimator(obj, attrNameX, animatorFn);
 }
 
-function animateWithAnimator(obj, attrName, animatorFn) {
-  obj["animatic_" + attrName] = animatorFn;
-  for (var i = animatic_Objects.length - 1; i >= 0; i--) {
-    var o = animatic_Objects[i];
-    var a = animatic_Attributes[i];
-    if ((o == obj) && (a == attrName)) {
-      animatic_Objects.splice(i, 1);
-      animatic_Attributes.splice(i, 1);
+function stopAnimation(obj, attrNameValue) {
+  var attrName = attrNameValue || "";
+  for (var i = _animatic_Objects.length - 1; i >= 0; i--) {
+    var o = _animatic_Objects[i];
+    var a = _animatic_Attributes[i];
+    if ((o == obj) && ((a == attrName) || (attrName = ""))) {
+      _animatic_Objects.splice(i, 1);
+      _animatic_Attributes.splice(i, 1);
     }
   }
-  animatic_Objects.push(obj);
-  animatic_Attributes.push(attrName);
+}
+
+//
+// And these are the rest
+//
+
+function _animatic_animateWithAnimator(obj, attrName, animatorFn) {
+  obj["animatic_" + attrName] = animatorFn;
+  for (var i = _animatic_Objects.length - 1; i >= 0; i--) {
+    var o = _animatic_Objects[i];
+    var a = _animatic_Attributes[i];
+    if ((o == obj) && (a == attrName)) {
+      _animatic_Objects.splice(i, 1);
+      _animatic_Attributes.splice(i, 1);
+    }
+  }
+  _animatic_Objects.push(obj);
+  _animatic_Attributes.push(attrName);
 }
 
 // Now repaint every 10 ms.
-setInterval(function() { updateAll() }, 10);
+setInterval(function() { _animatic_updateAll() }, 10);
 
-function updateAll() {
-  for (i in animatic_Objects) {
-    var obj = animatic_Objects[i];
-    var attrName = animatic_Attributes[i];
+function _animatic_updateAll() {
+  for (i in _animatic_Objects) {
+    var obj = _animatic_Objects[i];
+    var attrName = _animatic_Attributes[i];
     var units = unitsFor(obj[attrName]);
     var newValue = obj["animatic_" + attrName]()
     obj[attrName] = addUnitsTo("" + newValue, units);
   }
 }
 
-function stripUnits(s) {
+function _animatic_stripUnits(s) {
     return ("" + s).replace(/[a-z%]/ig, "");
 }
  
@@ -108,8 +116,8 @@ function addUnitsTo(s, u) {
 }
  
 function runner(p, fromValue, toValue) {
-  var v1 = eval(stripUnits(fromValue + ""));
-  var v2 = eval(stripUnits(toValue + ""));
+  var v1 = eval(_animatic_stripUnits(fromValue + ""));
+  var v2 = eval(_animatic_stripUnits(toValue + ""));
   var now = (new Date()).valueOf();
   var then = now + (p * 1000);
   function counterClosure() {
@@ -124,11 +132,11 @@ function runner(p, fromValue, toValue) {
   return counterClosure;
 }
 
-function drifterX(speedValue, startXValue, headingValue, wrap, maxXValue) {
+function _animatic_drifterX(speedValue, startXValue, headingValue, wrap, maxXValue) {
   var speed = speedValue;
-  var startX = eval(stripUnits(startXValue + ""));
-  var heading = eval(stripUnits(headingValue + ""));
-  var maxX = eval(stripUnits(maxXValue + ""));
+  var startX = eval(_animatic_stripUnits(startXValue + ""));
+  var heading = eval(_animatic_stripUnits(headingValue + ""));
+  var maxX = eval(_animatic_stripUnits(maxXValue + ""));
   var now = (new Date()).valueOf();
   function counterClosure() {
 	var justNow = (new Date()).valueOf();
@@ -148,11 +156,15 @@ function drifterX(speedValue, startXValue, headingValue, wrap, maxXValue) {
   return counterClosure;
 }
 
-function drifterY(speedValue, startYValue, headingValue, wrap, maxYValue) {
+//
+// The animator factories
+//
+
+function _animatic_drifterY(speedValue, startYValue, headingValue, wrap, maxYValue) {
   var speed = speedValue;
-  var startY = eval(stripUnits(startYValue + ""));
-  var heading = eval(stripUnits(headingValue + ""));
-  var maxY = eval(stripUnits(maxYValue + ""));
+  var startY = eval(_animatic_stripUnits(startYValue + ""));
+  var heading = eval(_animatic_stripUnits(headingValue + ""));
+  var maxY = eval(_animatic_stripUnits(maxYValue + ""));
   var now = (new Date()).valueOf();
   function counterClosure() {
 	var justNow = (new Date()).valueOf();
@@ -172,7 +184,7 @@ function drifterY(speedValue, startYValue, headingValue, wrap, maxYValue) {
   return counterClosure;
 }
 
-function rotator(p) {
+function _animatic_rotator(p) {
   var now = (new Date()).valueOf();
   var then = now + (p * 1000);
   function counterClosure() {
@@ -187,8 +199,8 @@ function rotator(p) {
   return counterClosure;
 }
 
-function springer(p, min, scale) {
-  var f = rotator(p);
+function _animatic_springer(p, min, scale) {
+  var f = _animatic_rotator(p);
   function counterClosure() {
 	return scale * (Math.sin(f() * Math.PI / 180.0) + min);
   }
