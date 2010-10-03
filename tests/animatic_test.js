@@ -64,7 +64,6 @@ test("Test what happens with a string attribute with units", function() {
     _mock_time_offset = 125; // 1/8th second
     _animatic_updateAll();
     equals(_animatic_now(), myTime + 125, "Checking mock time offset");
-document.title = testObject.a;
     equals(testObject.animatic_a(), 1.2928932188134525, "Animation should have completed");
     equals(testObject.a, "1.2928932188134525px", "Animation should have completed");
 });
