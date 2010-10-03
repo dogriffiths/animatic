@@ -38,7 +38,6 @@ function animate(obj, attrName, targetValue, howManySecs, animatorToUse)
 
 function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue)
 {
-document.title = "here I am";
     var speed = speedValue || 100;
     var maxX = maxXValue || window.innerWidth;
     var maxY = maxYValue || window.innerHeight;
