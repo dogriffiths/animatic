@@ -46,6 +46,12 @@ function animate(obj, attrName, targetValue, howManySecs)
     _animatic_animateWithAnimator(obj, attrName, animatorFn);
 }
 
+function rotate(obj, attrName, rpm)
+{
+    animatorFn = _animatic_rotator(60.0 / rpm);
+    _animatic_animateWithAnimator(obj, attrName, animatorFn);
+}
+
 /**
  * Make an object drift across the screen at a constant rate. This
  * function will look to see if the object has "top" and "left"
@@ -241,15 +247,16 @@ function _animatic_drifterY(speedValue, startYValue, headingValue, wrap, maxYVal
 function _animatic_rotator(p)
 {
     var now = _animatic_now();
-    var then = now + (p * 1000);
+    var then = now + (Math.abs(p) * 1000);
+    var sign = (p < 0) ? -1 : 1;
     function counterClosure() {
         var justNow = _animatic_now();
         if (justNow >= then) {
             now = justNow;
-            then = now + (p * 1000);
+            then = now + (Math.abs(p) * 1000);
         }
         var prop = (justNow - now) / (then - now);
-        return prop * 360.0;
+        return sign * prop * 360.0;
     }
     return counterClosure;
 }
