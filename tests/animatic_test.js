@@ -102,6 +102,21 @@ test("Test what happens with a string attribute with multiple numbers", function
     }
 });
 
+test("Test what happens with a numeric vector", function()
+{
+    stopAllAnimation();
+    var testObject = new Object();
+    testObject.a = [1, 2, 3];
+    _mock_time_offset = 0;
+    _animatic_now = mock_animatic_now;
+    animate(testObject, "a", [7, 8, 9]);
+    _mock_time_offset = 125; // 1/8th second
+    _animatic_updateAll();
+    equals(testObject.a[0], 2.7573593128807143, "Wrong x");
+    equals(testObject.a[1], 3.7573593128807143, "Wrong y");
+    equals(testObject.a[2], 4.757359312880714, "Wrong z");
+});
+
 
 
 

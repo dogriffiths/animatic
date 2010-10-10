@@ -28,6 +28,11 @@ var _animatic_Attributes = [];
 // These are the major functions.
 //
 
+function stopAllAnimation() {
+  _animatic_Objects = [];
+  _animatic_Attributes = [];
+}
+
 /**
  * Animate an attribute of an object to some value.
  *
@@ -42,8 +47,19 @@ var _animatic_Attributes = [];
 function animate(obj, attrName, targetValue, howManySecs)
 {
     var t = howManySecs || 0.25;
-    animatorFn = _animatic_runner(t, obj[attrName], targetValue);
-    _animatic_animateWithAnimator(obj, attrName, animatorFn);
+    if (obj[attrName] instanceof Array) {
+      for (var i = 0; i < obj[attrName].length; i++) {
+        var itemObject = new Object();
+        itemObject["_object"] = obj;
+        itemObject["_attr"] = "" + attrName;
+        itemObject["_item_" + i] = obj[attrName][i];
+        animatorFn = _animatic_runner(t, obj[attrName][i], targetValue[i]);
+        _animatic_animateWithAnimator(itemObject, "_item_" + i, animatorFn);
+      }
+    } else {
+      animatorFn = _animatic_runner(t, obj[attrName], targetValue);
+      _animatic_animateWithAnimator(obj, attrName, animatorFn);
+    }
 }
 
 function rotate(obj, attrName, rpm)
@@ -141,8 +157,16 @@ function _animatic_updateAll()
         var obj = _animatic_Objects[i];
         var attrName = _animatic_Attributes[i];
         var units = _animatic_unitsFor(obj[attrName]);
-        var newValue = obj["animatic_" + attrName]()
-                       obj[attrName] = _animatic_addUnitsTo("" + newValue, units);
+        var newValue = obj["animatic_" + attrName]();
+//document.title = attrName;
+        if (attrName.match("^_item_")  == "_item_") {
+          var origObject = obj["_object"];
+          var origAttr = obj["_attr"];
+          var origIndex = eval(attrName.substring(6));
+          origObject[origAttr][eval(origIndex)] = _animatic_addUnitsTo("" + newValue, units);
+        } else { 
+          obj[attrName] = _animatic_addUnitsTo("" + newValue, units);
+        }
     }
 }
 
