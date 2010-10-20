@@ -213,7 +213,6 @@ function _animatic_runner(p, fromValue, toValue)
             return v2;
         }
         var prop = (justNow - now) / (then - now);
-//        var currently = v1 + ((1 - Math.sqrt(1 - prop)) * (v2 - v1));
         var currently = v1 + (Math.sin(prop * Math.PI / 2) * (v2 - v1));
         return currently;
     }
