@@ -40,8 +40,8 @@ test("Test simple animation", function()
     _animatic_updateAll();
     equals(_animatic_now(), myTime + 125, "Checking mock time offset");
     // Check that the SQRT function animates the .a attribute to 1.29 (between 1 & 2)
-    equalsWithin2DP(testObject.animatic_a(), 1.29, "Generated dynamic attribute function");
-    equalsWithin2DP(testObject.a, 1.29, "Check attribute");
+    equalsWithin2DP(testObject.animatic_a(), 1.71, "Generated dynamic attribute function");
+    equalsWithin2DP(testObject.a, 1.71, "Check attribute");
 });
 
 test("Test completed animation", function()
@@ -69,8 +69,8 @@ test("Test what happens with a string attribute with units", function()
     _mock_time_offset = 125; // 1/8th second
     _animatic_updateAll();
     equals(_animatic_now(), myTime + 125, "Checking mock time offset");
-    equals(testObject.animatic_a(), 1.2928932188134525, "Animation should have completed");
-    equals(testObject.a, "1.2928932188134525px", "Animation should have completed");
+    equals(testObject.animatic_a(), 1.7071067811865475, "Animation should have completed");
+    equals(testObject.a, "1.7071067811865475px", "Animation should have completed");
 });
 
 test("Test what happens with a string attribute with a number within the units", function()
@@ -82,8 +82,8 @@ test("Test what happens with a string attribute with a number within the units",
     animate(testObject, "a", 2);
     _mock_time_offset = 125; // 1/8th second
     _animatic_updateAll();
-    equals(testObject.animatic_a(), 1.2928932188134525, "Animation should have completed");
-    equals(testObject.a, "rotate(1.2928932188134525deg)", "Animation should have completed");
+    equals(testObject.animatic_a(), 1.7071067811865475, "Animation should have completed");
+    equals(testObject.a, "rotate(1.7071067811865475deg)", "Animation should have completed");
 });
 
 test("Test what happens with a string attribute with multiple numbers", function()
@@ -112,9 +112,9 @@ test("Test what happens with a numeric vector", function()
     animate(testObject, "a", [7, 8, 9]);
     _mock_time_offset = 125; // 1/8th second
     _animatic_updateAll();
-    equals(testObject.a[0], 2.7573593128807143, "Wrong x");
-    equals(testObject.a[1], 3.7573593128807143, "Wrong y");
-    equals(testObject.a[2], 4.757359312880714, "Wrong z");
+    equals(testObject.a[0], 5.242640687119285, "Wrong x");
+    equals(testObject.a[1], 6.242640687119285, "Wrong y");
+    equals(testObject.a[2], 7.242640687119285, "Wrong z");
 });
 
 
