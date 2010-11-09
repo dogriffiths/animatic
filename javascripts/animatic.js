@@ -86,6 +86,9 @@ function rotate(obj, attrName, rpm)
  */
 function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue)
 {
+    if (speedValue == 0) {
+        return;
+    }
     var speed = speedValue || 100;
     var maxX = maxXValue || window.innerWidth;
     var maxY = maxYValue || window.innerHeight;
