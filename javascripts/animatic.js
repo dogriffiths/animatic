@@ -34,6 +34,10 @@ function stopAllAnimation()
     _animatic_Attributes = [];
 }
 
+function _animatic_Sequencer()
+{
+}
+
 /**
  * Animate an attribute of an object to some value.
  *
@@ -48,19 +52,22 @@ function stopAllAnimation()
 function animate(obj, attrName, targetValue, howManySecs)
 {
     var t = howManySecs || 0.25;
+    var seq = new _animatic_Sequencer();
     if (obj[attrName] instanceof Array) {
         for (var i = 0; i < obj[attrName].length; i++) {
             var itemObject = new Object();
             itemObject["_object"] = obj;
             itemObject["_attr"] = "" + attrName;
             itemObject["_item_" + i] = obj[attrName][i];
-            animatorFn = _animatic_runner(t, obj[attrName][i], targetValue[i]);
+            animatorFn = _animatic_runner(t, obj[attrName][i], targetValue[i], obj, attrName, seq);
             _animatic_animateWithAnimator(itemObject, "_item_" + i, animatorFn);
         }
     } else {
-        animatorFn = _animatic_runner(t, obj[attrName], targetValue);
+        animatorFn = _animatic_runner(t, obj[attrName], targetValue, obj, attrName, seq);
         _animatic_animateWithAnimator(obj, attrName, animatorFn);
     }
+document.title = "animate _animatic_Objects = " + _animatic_Objects.length;
+    return seq;
 }
 
 function rotate(obj, attrName, rpm)
@@ -108,6 +115,7 @@ function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue)
     }
     animatorFn = _animatic_drifterX(speed, obj[attrNameX], heading, wrap, maxX);
     _animatic_animateWithAnimator(obj, attrNameX, animatorFn);
+document.title = "drift _animatic_Objects = " + _animatic_Objects.length;
 }
 
 /**
@@ -128,6 +136,7 @@ function stopAnimation(obj, attrNameValue)
             _animatic_Attributes.splice(i, 1);
         }
     }
+    document.title = "animation stopped now _animatic_Objects = " + _animatic_Objects.length;
 }
 
 //
@@ -162,7 +171,6 @@ function _animatic_updateAll()
         var attrName = _animatic_Attributes[i];
         var units = _animatic_unitsFor(obj[attrName]);
         var newValue = obj["animatic_" + attrName]();
-//document.title = attrName;
         if (attrName.match("^_item_")  == "_item_") {
             var origObject = obj["_object"];
             var origAttr = obj["_attr"];
@@ -190,7 +198,7 @@ function _animatic_addUnitsTo(s, u)
         return eval(s);
     }
     if (u.match(/\?.+\?/)) {
-        throw "Animatic cannot animate an attribute with multiple parameters";
+        throw "Animatic cannot animate an attribute with multiple parameters: '" + u + "'";
     }
     return u.replace( /\?/ig, "" + s);
 }
@@ -204,15 +212,23 @@ function _animatic_now()
 // The animator factories
 //
 
-function _animatic_runner(p, fromValue, toValue)
+function _animatic_runner(p, fromValue, toValue, obj, attrName, seq)
 {
     var v1 = eval(_animatic_stripUnits(fromValue + ""));
     var v2 = eval(_animatic_stripUnits(toValue + ""));
     var now = _animatic_now();
     var then = now + (p * 1000);
+    var seqRun = false;
     function counterClosure() {
         var justNow = _animatic_now();
         if (justNow >= then) {
+            if (!seqRun) {
+                seqRun = true;
+                if (seq.next) {
+                    seq.next();
+                }
+            }
+            stopAnimation(obj, attrName);
             return v2;
         }
         var prop = (justNow - now) / (then - now);

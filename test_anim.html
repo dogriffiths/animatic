@@ -4,23 +4,26 @@
     <title>Test page for Animatic JavaScript library</title>
     <meta name = "viewport" content = "width = device-width" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="javascripts/ani.js"></script>
+    <script src="javascripts/animatic.js"></script>
 
     <script>
       function clicked(event) {
         var test = document.getElementById("test");
         
+        var secondsToAnimate = 1;
+        
         // Move the DIV to the (X, Y) position that was clicked.
-        animate(test.style, "left", event.clientX);
-        animate(test.style, "top", event.clientY);
+        animate(test.style, "left", event.clientX, secondsToAnimate);
+        animate(test.style, "top", event.clientY, secondsToAnimate).next = function() {
+            animate(test.style, "-webkit-transform", Math.floor(Math.random() * 360), 2);
+        }
 
-        animate(test.style, "-webkit-transform", Math.floor(Math.random() * 360));
 
         // And make the font a random size.
-        animate(test.style, "fontSize", Math.floor(Math.random()*31) + 4);
+        animate(test.style, "fontSize", Math.floor(Math.random()*31) + 4, secondsToAnimate);
 
         // And some random transparency
-        animate(test.style, "opacity", Math.random());
+        animate(test.style, "opacity", Math.random(), 3);
       }
       
       document.onmousedown = clicked;
