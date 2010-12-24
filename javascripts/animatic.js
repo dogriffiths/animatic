@@ -66,7 +66,7 @@ function animate(obj, attrName, targetValue, howManySecs)
         animatorFn = _animatic_runner(t, obj[attrName], targetValue, obj, attrName, seq);
         _animatic_animateWithAnimator(obj, attrName, animatorFn);
     }
-document.title = "animate _animatic_Objects = " + _animatic_Objects.length;
+    document.title = "animate _animatic_Objects = " + _animatic_Objects.length;
     return seq;
 }
 
@@ -115,7 +115,7 @@ function drift(obj, heading, speedValue, wrapValue, maxXValue, maxYValue)
     }
     animatorFn = _animatic_drifterX(speed, obj[attrNameX], heading, wrap, maxX);
     _animatic_animateWithAnimator(obj, attrNameX, animatorFn);
-document.title = "drift _animatic_Objects = " + _animatic_Objects.length;
+    document.title = "drift _animatic_Objects = " + _animatic_Objects.length;
 }
 
 /**
