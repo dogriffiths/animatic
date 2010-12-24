@@ -7,15 +7,16 @@
     <script src="javascripts/animatic.js"></script>
 
     <script>
+      var test;
       function clicked(event) {
-        var test = document.getElementById("test");
         
         var secondsToAnimate = 1;
         
         // Move the DIV to the (X, Y) position that was clicked.
         animate(test.style, "left", event.clientX, secondsToAnimate);
         animate(test.style, "top", event.clientY, secondsToAnimate).next = function() {
-            animate(test.style, "-webkit-transform", Math.floor(Math.random() * 360), 2);
+            animate(test.style, "-webkit-transform", Math.floor(Math.random() * 360), 1);
+            flash(test, 0.5);
         }
 
 
@@ -26,9 +27,17 @@
         animate(test.style, "opacity", Math.random(), 3);
       }
       
+      function flash(element, time) {
+        var origOpacity = element.style.opacity;
+        animate(element.style, "opacity", 0, time).next = function() {
+            animate(element.style, "opacity", origOpacity, time);
+        };
+      }
+      
       document.onmousedown = clicked;
 
       function init() {
+        test = document.getElementById("test");
         var test2 = document.getElementById("test2");
         drift(test2.style, -30, 30);
         var test3 = document.getElementById("test3");
